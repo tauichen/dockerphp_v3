@@ -45,6 +45,26 @@
           - dockerinnernet
         volumes:
           - /docker/redis:/data
+      elasticsearch:
+        image: elasticsearch:5.3
+        container_name: es53
+        ports:
+          - "9200:9200"
+        networks:
+          - dockerinnernet
+        volumes:
+          - /docker/esdata:/usr/share/elasticsearch/data
+      logstash:
+        image: logstash:5.3
+        container_name: logstash53
+        depends_on:
+          - "elasticsearch"
+        networks:
+          - dockerinnernet
+        ports:
+          - "9600:9600"
+        volumes:
+          - /docker/logstash/pipeline/:/usr/share/logstash/pipelne/
     networks: 
       dockerinnernet:
     volumes:
