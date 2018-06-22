@@ -57,8 +57,7 @@
       logstash:
         image: logstash:5.3
         container_name: logstash53
-        depends_on:
-          - "elasticsearch"
+        tty: true
         networks:
           - dockerinnernet
         ports:
