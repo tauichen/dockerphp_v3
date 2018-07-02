@@ -25,17 +25,16 @@
         volumes:
           - /docker/www:/var/www/html
       mysql:
-        image: mysql:5.7
+        build:
+          context: /docker/mysql
         container_name: mysql
         ports:
           - "3306:3306"
         networks: 
           - dockerinnernet
         volumes:
-          - mydata:/var/lib/mysql
+          - /docker/mydata:/var/lib/mysql
           - /docker/dbdump:/root
-        environment:
-          MYSQL_ROOT_PASSWORD: "123456"
       redis:
         image: redis
         container_name: redis
@@ -64,6 +63,28 @@
           - "9600:9600"
         volumes:
           - /docker/logstash/pipeline/:/usr/share/logstash/pipelne/
+      zookeeper:
+        image: wurstmeister/zookeper
+        container_name: zookeeper
+        ports:
+          - "2181:2181"
+        networks:
+          - dockerinnernet
+      kafka:
+        image: wurstmeister/kafka
+        container_name: kafka
+        ports:
+          - "9092:9092"
+        networks:
+          - dockerinnernet
+        depends_on:
+          - "zookeeper"
+        tty: true
+        environment:
+          HOST_IP: "localhost"
+          KAFKA_ADVERTISED_PORT: "9092"
+          KAFKA_BROKER_ID: "1"
+          ZK: "zookeeper"
     networks: 
       dockerinnernet:
     volumes:
